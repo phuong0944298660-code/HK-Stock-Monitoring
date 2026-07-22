@@ -1,0 +1,94 @@
+{
+  "demo": true,
+  "generatedAt": "2026-07-22T16:56:53.828Z",
+  "market": {
+    "status": "closed",
+    "statusText": "已收盘 · 收盘快照",
+    "hsi": {
+      "value": 25184.32,
+      "changePct": 0.62
+    },
+    "hstech": {
+      "value": 5482.1,
+      "changePct": -0.35
+    }
+  },
+  "holdings": [
+    {
+      "code": "09988",
+      "windcode": "09988.HK",
+      "name": "阿里巴巴-W",
+      "currency": "HKD",
+      "price": 108.4,
+      "prevClose": 111,
+      "dayChangePct": -2.34,
+      "volume": 28400000,
+      "volAvg20": 12300000,
+      "cost": 113.1,
+      "shares": 200,
+      "bands": {
+        "buyBelow": 110,
+        "sellAbove": 152,
+        "stopLoss": null
+      },
+      "signal": "buy"
+    },
+    {
+      "code": "00700",
+      "windcode": "00700.HK",
+      "name": "腾讯控股",
+      "currency": "HKD",
+      "price": 512.5,
+      "prevClose": 505.2,
+      "dayChangePct": 1.45,
+      "volume": 15200000,
+      "volAvg20": 14800000,
+      "cost": null,
+      "shares": null,
+      "bands": {
+        "buyBelow": 430,
+        "sellAbove": 620,
+        "stopLoss": null
+      },
+      "signal": "none"
+    }
+  ],
+  "signals": [
+    {
+      "id": "sig-001",
+      "time": "2026-07-23 15:42",
+      "code": "09988",
+      "name": "阿里巴巴-W",
+      "type": "BUY_ZONE",
+      "level": "high",
+      "title": "进入补仓区",
+      "detail": "现价 108.40 ≤ 补仓线 110.00；持仓浮亏 -940 HKD（-4.2%）",
+      "verdict": "补仓（分批）",
+      "verdictSummary": "论点核查：云智能集团增速与回购计划未发生变化，3 条红线均未触及。建议在 105–108 区间分两批执行，每批 100 股；若按 108 补入 100 股，新成本约 111.05。"
+    },
+    {
+      "id": "sig-002",
+      "time": "2026-07-23 14:12",
+      "code": "09988",
+      "name": "阿里巴巴-W",
+      "type": "VOL_ALERT",
+      "level": "mid",
+      "title": "成交量异动",
+      "detail": "成交 2,840 万股，为 20 日均量 2.3 倍",
+      "verdict": "持有",
+      "verdictSummary": "未见对应利空公告，放量下跌归因于大盘情绪波动与板块轮动，论点不受影响。"
+    },
+    {
+      "id": "sig-003",
+      "time": "2026-07-23 11:05",
+      "code": "00700",
+      "name": "腾讯控股",
+      "type": "EVENT",
+      "level": "info",
+      "title": "财报日历",
+      "detail": "2026 年第二季度业绩定于 8 月 12 日发布，注意发布前后的预期波动",
+      "verdict": null,
+      "verdictSummary": null
+    }
+  ]
+}

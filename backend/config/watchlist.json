@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-22T16:56:53.793Z",
+  "stocks": [
+    {
+      "code": "09988",
+      "windcode": "09988.HK",
+      "name": "阿里巴巴-W",
+      "cost": 113.1,
+      "shares": 200,
+      "bands": {
+        "buyBelow": 110,
+        "sellAbove": 152,
+        "stopLoss": null
+      },
+      "thesis": "（待建仓级分析确认）电商平台龙头，云智能集团增长与大规模回购为核心论点",
+      "redLines": [
+        "（待建仓级分析确认）"
+      ],
+      "bandsStatus": "mock-pending-dossier"
+    }
+  ]
+}
