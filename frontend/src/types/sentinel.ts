@@ -41,6 +41,13 @@ export interface Holding {
   signal: SignalLight;
 }
 
+export interface Evidence {
+  title: string; // 标题（含关键数据点）
+  url: string; // 准确链接，禁止编造
+  source: string; // 来源机构
+  date: string; // 发布日期
+}
+
 export interface SignalItem {
   id: string;
   time: string;
@@ -52,6 +59,7 @@ export interface SignalItem {
   detail: string;
   verdict: string | null; // AI 研判结论（补仓/卖出/持有/噪音）
   verdictSummary: string | null; // AI 研判依据摘要
+  evidence: Evidence[]; // 建议动作的来源依据，可多条；无可靠来源时为空并标注“灰色地带”
 }
 
 export interface LatestData {

@@ -52,6 +52,33 @@ function SignalCard({ s }: { s: SignalItem }) {
           </p>
         </div>
       )}
+      {s.evidence && s.evidence.length > 0 && (
+        <div className="mt-2 border-t border-[#1a2540] pt-2">
+          <span className="font-data text-[10px] tracking-[0.18em] text-slate-500">
+            依据来源
+          </span>
+          <ul className="mt-1.5 space-y-1.5">
+            {s.evidence.map((e, i) => (
+              <li key={i}>
+                <a
+                  href={e.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group inline-flex items-start gap-1.5 text-xs leading-relaxed text-[#22d3ee] hover:underline"
+                >
+                  <span className="mt-1.5 inline-block h-1 w-1 shrink-0 rounded-full bg-[#22d3ee]/60" />
+                  <span>
+                    {e.title}
+                    <span className="ml-1.5 whitespace-nowrap font-data text-[10px] text-slate-500">
+                      {e.source} · {e.date}
+                    </span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
