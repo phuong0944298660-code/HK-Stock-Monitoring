@@ -77,11 +77,8 @@ def build_latest(push: bool = False) -> dict:
             warnings.append(f"{windcode} 行情获取失败，本轮跳过: {exc}")
             continue
 
-        try:
-            avg20 = fetch_quotes.vol_avg20(windcode)
-        except Exception as exc:  # noqa: BLE001
-            avg20 = None
-            warnings.append(f"{windcode} 20日均量获取失败: {exc}")
+        avg20, w = fetch_quotes.vol_avg20(windcode)
+        warnings.extend(w)
 
         pnl_amt, pnl_pct = rules.pnl(stock.get("cost"), stock.get("shares"), snap["price"])
         light, stock_signals = rules.evaluate(stock, snap, avg20, now_hhmm)
@@ -117,7 +114,7 @@ def build_latest(push: bool = False) -> dict:
         "holdings": holdings,
         "signals": signals,
         "warnings": warnings,
-        "sources": ["Wind（经 agent-gw 网关）", "腾讯行情（兜底①）", "Yahoo Finance（兜底②，仅前两源失败时）"],
+        "sources": ["Wind（经 agent-gw 网关）", "腾讯行情（个股/指数兜底①）", "东方财富（日K兜底）", "Yahoo Finance（兜底②，仅前两源失败时）"],
     }
     return latest
 

@@ -1,16 +1,16 @@
 {
   "demo": false,
-  "generatedAt": "2026-07-23T23:05:41+08:00",
+  "generatedAt": "2026-07-24T00:33:43+08:00",
   "market": {
-    "status": "closed",
-    "statusText": "港股已收市",
+    "status": "pre",
+    "statusText": "盘前",
     "hsi": {
-      "value": null,
-      "changePct": null
+      "value": 25210.81,
+      "changePct": 1.28
     },
     "hstech": {
-      "value": null,
-      "changePct": null
+      "value": 4698.48,
+      "changePct": 0.65
     }
   },
   "holdings": [
@@ -23,7 +23,7 @@
       "prevClose": 113.6,
       "dayChangePct": 1.14,
       "volume": 52344763.0,
-      "volAvg20": null,
+      "volAvg20": 122619918.0,
       "cost": 113.1,
       "shares": 200,
       "pnl": 360.0,
@@ -35,21 +35,16 @@
       },
       "bandsStatus": "confirmed",
       "signal": "hold",
-      "source": "tencent-fallback",
-      "asof": "2026-07-23T16:08:10+08:00"
+      "source": "wind",
+      "asof": "2026-07-24T00:33:47+08:00"
     }
   ],
   "signals": [],
-  "warnings": [
-    "Wind 指数快照失败(HSI.HI): Wind CLI 退出码 1: {\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"QUOTA_ERROR\",\n    \"agent_action\": \"[{'type': 'text', 'text': 'API_CALL_ERROR - Wind tool returned error for tools/call: {\\\"isError\\\": true, \\\"content\\\": [{\\\"text\\\": \\\"余额不足，请先充值\\\", \\\"type\\\": \\\"text\\\"}]}'} (server=index_data, tool=get_index_price_indicators, ",
-    "Wind 指数快照失败(HSTECH.HI): Wind CLI 退出码 1: {\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"QUOTA_ERROR\",\n    \"agent_action\": \"[{'type': 'text', 'text': 'API_CALL_ERROR - Wind tool returned error for tools/call: {\\\"isError\\\": true, \\\"content\\\": [{\\\"text\\\": \\\"余额不足，请先充值\\\", \\\"type\\\": \\\"text\\\"}]}'} (server=index_data, tool=get_index_price_indicators, ",
-    "Wind 个股快照失败(09988.HK): Wind CLI 退出码 1: {\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"QUOTA_ERROR\",\n    \"agent_action\": \"[{'type': 'text', 'text': 'API_CALL_ERROR - Wind tool returned error for tools/call: {\\\"isError\\\": true, \\\"content\\\": [{\\\"text\\\": \\\"余额不足，请先充值\\\", \\\"type\\\": \\\"text\\\"}]}'} (server=stock_data, tool=get_stock_price_indicators, ",
-    "09988.HK 已降级腾讯兜底源",
-    "09988.HK 20日均量获取失败: Wind CLI 退出码 1: {\n  \"ok\": false,\n  \"error\": {\n    \"code\": \"QUOTA_ERROR\",\n    \"agent_action\": \"[{'type': 'text', 'text': 'API_CALL_ERROR - Wind tool returned error for tools/call: {\\\"isError\\\": true, \\\"content\\\": [{\\\"text\\\": \\\"余额不足，请先充值\\\", \\\"type\\\": \\\"text\\\"}]}'} (server=stock_data, tool=get_stock_kline, api_name=wi"
-  ],
+  "warnings": [],
   "sources": [
     "Wind（经 agent-gw 网关）",
-    "腾讯行情（兜底①）",
+    "腾讯行情（个股/指数兜底①）",
+    "东方财富（日K兜底）",
     "Yahoo Finance（兜底②，仅前两源失败时）"
   ]
 }
