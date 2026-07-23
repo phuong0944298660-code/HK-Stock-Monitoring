@@ -1,11 +1,17 @@
 {
-  "demo": true,
-  "generatedAt": "2026-07-23T16:42:00+08:00",
+  "demo": false,
+  "generatedAt": "2026-07-23T10:01:57+08:00",
   "market": {
-    "status": "closed",
-    "statusText": "已收盘 · 收盘快照",
-    "hsi": { "value": 25184.32, "changePct": 0.62 },
-    "hstech": { "value": 5482.1, "changePct": -0.35 }
+    "status": "open",
+    "statusText": "港股交易中",
+    "hsi": {
+      "value": 25124.55,
+      "changePct": 0.93
+    },
+    "hstech": {
+      "value": 4678.97,
+      "changePct": 0.23
+    }
   },
   "holdings": [
     {
@@ -13,116 +19,30 @@
       "windcode": "09988.HK",
       "name": "阿里巴巴-W",
       "currency": "HKD",
-      "price": 108.4,
-      "prevClose": 111.0,
-      "dayChangePct": -2.34,
-      "volume": 28400000,
-      "volAvg20": 12300000,
+      "price": 114.4,
+      "prevClose": 113.6,
+      "dayChangePct": 0.7,
+      "volume": 19026778.0,
+      "volAvg20": 125163505.0,
       "cost": 113.1,
       "shares": 200,
-      "bands": { "buyBelow": 110.0, "sellAbove": 152.0, "stopLoss": null },
-      "signal": "buy"
-    },
-    {
-      "code": "00700",
-      "windcode": "00700.HK",
-      "name": "腾讯控股",
-      "currency": "HKD",
-      "price": 512.5,
-      "prevClose": 505.2,
-      "dayChangePct": 1.45,
-      "volume": 15200000,
-      "volAvg20": 14800000,
-      "cost": null,
-      "shares": null,
-      "bands": { "buyBelow": 430.0, "sellAbove": 620.0, "stopLoss": null },
-      "signal": "none"
+      "pnl": 260.0,
+      "pnlPct": 1.15,
+      "bands": {
+        "buyBelow": 110,
+        "sellAbove": 152,
+        "stopLoss": null
+      },
+      "bandsStatus": "mock-pending-dossier",
+      "signal": "hold",
+      "source": "wind",
+      "asof": "2026-07-23T10:02:01+08:00"
     }
   ],
-  "signals": [
-    {
-      "id": "sig-001",
-      "time": "2026-07-23 15:42",
-      "code": "09988",
-      "name": "阿里巴巴-W",
-      "type": "BUY_ZONE",
-      "level": "high",
-      "title": "进入补仓区",
-      "detail": "现价 108.40 ≤ 补仓线 110.00；持仓浮亏 -940 HKD（-4.2%）",
-      "verdict": "补仓（分批）",
-      "verdictSummary": "论点核查：云智能外部商业化收入最新季度 +40%、AI 相关收入连续 11 个季度三位数增长，回购已于 6 月下旬恢复，3 条红线均未触及。建议在 105–108 区间分两批执行，每批 100 股；若按 108 补入 100 股，新成本约 111.05。",
-      "evidence": [
-        {
-          "title": "阿里巴巴集团公布 2026 年 3 月份季度及 2026 财年业绩：云外部商业化收入增速提升至 40%，AI 相关收入占比达 30%",
-          "url": "https://www.alibabagroup.com/document-1991237455038119936",
-          "source": "阿里巴巴集团官网",
-          "date": "2026-05-13"
-        },
-        {
-          "title": "阿里巴巴 Q1 营收小幅增长，云收入同比增长 38%，首次披露 AI 相关收入 89.71 亿元",
-          "url": "https://wallstreetcn.com/articles/3772187",
-          "source": "华尔街见闻",
-          "date": "2026-05-13"
-        },
-        {
-          "title": "阿里巴巴-W(09988) 6 月 25 日斥资 1249.78 万美元回购 104.64 万股",
-          "url": "https://finance.jrj.com.cn/2026/06/26183257598615.shtml",
-          "source": "智通财经·金融界",
-          "date": "2026-06-26"
-        }
-      ]
-    },
-    {
-      "id": "sig-002",
-      "time": "2026-07-23 14:12",
-      "code": "09988",
-      "name": "阿里巴巴-W",
-      "type": "VOL_ALERT",
-      "level": "mid",
-      "title": "成交量异动",
-      "detail": "成交 2,840 万股，为 20 日均量 2.3 倍",
-      "verdict": "持有",
-      "verdictSummary": "未见对应利空公告；回购自 6 月 22 日起恢复且逐日执行，放量下跌归因于大盘情绪波动与板块轮动，论点不受影响。",
-      "evidence": [
-        {
-          "title": "阿里终于开始恢复回购：6 月 22 日耗资 1249.8 万美元回购 95.25 万股",
-          "url": "https://xueqiu.com/2106533683/396261144",
-          "source": "格隆汇·雪球",
-          "date": "2026-06-23"
-        },
-        {
-          "title": "阿里巴巴-W(09988) 公司回购数据逐日跟踪",
-          "url": "https://hk.eastmoney.com/buyback.html?code=09988",
-          "source": "东方财富港股",
-          "date": "实时"
-        }
-      ]
-    },
-    {
-      "id": "sig-003",
-      "time": "2026-07-23 11:05",
-      "code": "09988",
-      "name": "阿里巴巴-W",
-      "type": "EVENT",
-      "level": "info",
-      "title": "回购计划额度跟踪",
-      "detail": "董事会授权回购额度有效期至 2027 年 3 月；逐日回购已于 6 月 22 日恢复，关注执行节奏对股本的持续摊薄",
-      "verdict": null,
-      "verdictSummary": null,
-      "evidence": [
-        {
-          "title": "阿里巴巴集团 2026 财年业绩公告（含回购计划进展）",
-          "url": "https://www.alibabagroup.com/document-1991237455038119936",
-          "source": "阿里巴巴集团官网",
-          "date": "2026-05-13"
-        },
-        {
-          "title": "阿里巴巴-W(09988) 6 月 25 日斥资 1249.78 万美元回购 104.64 万股",
-          "url": "https://finance.jrj.com.cn/2026/06/26183257598615.shtml",
-          "source": "智通财经·金融界",
-          "date": "2026-06-26"
-        }
-      ]
-    }
+  "signals": [],
+  "warnings": [],
+  "sources": [
+    "Wind（经 agent-gw 网关）",
+    "Yahoo Finance（兜底，仅主源失败时）"
   ]
 }

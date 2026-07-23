@@ -1,21 +1,24 @@
 import type { IndexSnapshot, LatestData } from "@/types/sentinel";
 
 function IndexChip({ label, idx }: { label: string; idx: IndexSnapshot }) {
-  const up = idx.changePct >= 0;
+  const missing = idx.value == null;
+  const up = (idx.changePct ?? 0) >= 0;
   return (
     <div className="flex items-baseline gap-2 rounded-md border border-[#1a2540] bg-[#111a2b] px-3 py-1.5">
       <span className="font-data text-[10px] tracking-[0.18em] text-slate-500">
         {label}
       </span>
       <span className="font-data tnum text-sm font-semibold text-slate-100">
-        {idx.value.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+        {missing ? "—" : idx.value!.toLocaleString("en-US", { minimumFractionDigits: 2 })}
       </span>
-      <span
-        className={`font-data tnum text-xs font-medium ${up ? "text-up" : "text-down"}`}
-      >
-        {up ? "▲" : "▼"} {up ? "+" : ""}
-        {idx.changePct}%
-      </span>
+      {!missing && idx.changePct != null && (
+        <span
+          className={`font-data tnum text-xs font-medium ${up ? "text-up" : "text-down"}`}
+        >
+          {up ? "▲" : "▼"} {up ? "+" : ""}
+          {idx.changePct}%
+        </span>
+      )}
     </div>
   );
 }

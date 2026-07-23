@@ -7,9 +7,16 @@ export function TopTicker({ data }: { data: LatestData | null }) {
     for (const s of data.signals) {
       items.push(`${s.time.slice(5)} · ${s.name} ${s.title} · ${s.detail}`);
     }
-    items.push(
-      `恒指 ${data.market.hsi.value.toLocaleString("en-US", { minimumFractionDigits: 2 })} ${data.market.hsi.changePct >= 0 ? "+" : ""}${data.market.hsi.changePct}%`,
-    );
+    if (data.market.hsi.value != null) {
+      items.push(
+        `恒指 ${data.market.hsi.value.toLocaleString("en-US", { minimumFractionDigits: 2 })} ${(data.market.hsi.changePct ?? 0) >= 0 ? "+" : ""}${data.market.hsi.changePct ?? "—"}%`,
+      );
+    }
+    if (data.market.hstech?.value != null) {
+      items.push(
+        `恒生科技 ${data.market.hstech.value.toLocaleString("en-US", { minimumFractionDigits: 2 })} ${(data.market.hstech.changePct ?? 0) >= 0 ? "+" : ""}${data.market.hstech.changePct ?? "—"}%`,
+      );
+    }
     items.push(`下次例行刷新 · 交易时段每 30 分钟`);
   }
   const loop = [...items, ...items];

@@ -15,8 +15,8 @@ export type SignalLevel = "critical" | "high" | "mid" | "info";
 export type SignalLight = "buy" | "hold" | "sell" | "alert" | "none";
 
 export interface IndexSnapshot {
-  value: number;
-  changePct: number;
+  value: number | null; // 指数抓取失败时为 null
+  changePct: number | null;
 }
 
 export interface Bands {
@@ -37,8 +37,13 @@ export interface Holding {
   volAvg20: number;
   cost: number | null; // null = 纯观察，无持仓
   shares: number | null;
+  pnl?: number | null; // 浮动盈亏金额（HKD），后端计算
+  pnlPct?: number | null; // 浮动盈亏 %
   bands: Bands;
+  bandsStatus?: string; // confirmed = 价格带已经建仓级分析确认
   signal: SignalLight;
+  source?: string; // 数据源：wind / yahoo-fallback
+  asof?: string; // 行情快照时点
 }
 
 export interface Evidence {
@@ -73,6 +78,8 @@ export interface LatestData {
   };
   holdings: Holding[];
   signals: SignalItem[];
+  warnings?: string[]; // 本轮取数降级/失败告警（前端可提示）
+  sources?: string[]; // 数据源说明
 }
 
 // watchlist.json（backend/config）结构

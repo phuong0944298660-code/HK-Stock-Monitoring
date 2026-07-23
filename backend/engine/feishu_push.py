@@ -96,6 +96,95 @@ def demo_card() -> dict:
     }
 
 
+_HEADER_STYLE = {
+    "BUY_ZONE": ("green", "🟢 补仓信号"),
+    "SELL_ZONE": ("red", "🔴 卖出信号"),
+    "RED_LINE": ("red", "⛔ 红线警报"),
+    "VOL_ALERT": ("orange", "🟠 量价异动"),
+    "EVENT": ("blue", "🔵 事件提示"),
+}
+_PUSH_LEVELS = {"critical", "high"}
+
+
+def signal_card(signal: dict, holding: dict | None, generated_at: str) -> dict:
+    """真实信号卡片。verdict/evidence 为空时不渲染对应区块，绝不编造。"""
+    template, label = _HEADER_STYLE.get(signal["type"], ("grey", "信号"))
+    holding = holding or {}
+    price = holding.get("price")
+    chg = holding.get("dayChangePct")
+    pnl, pnl_pct = holding.get("pnl"), holding.get("pnlPct")
+
+    def field(title, value):
+        return {"is_short": True, "text": {"tag": "lark_md", "content": f"**{title}**\n{value}"}}
+
+    fields = [field("现价", f"{price} HKD" if price is not None else "—"),
+              field("日涨跌", f"{chg:+.2f}%" if isinstance(chg, (int, float)) else "—")]
+    if pnl is not None:
+        fields.append(field("持仓浮盈", f"{pnl:+,.0f} HKD（{pnl_pct:+.1f}%）"))
+    fields.append(field("触发规则", signal.get("detail", "")[:80]))
+
+    elements: list[dict] = [{"tag": "div", "fields": fields}]
+
+    if signal.get("verdict"):
+        summary = signal.get("verdictSummary") or ""
+        elements.append({
+            "tag": "div",
+            "text": {"tag": "lark_md",
+                     "content": f"**AI 研判**\n**结论：{signal['verdict']}**\n{summary}".strip()},
+        })
+        evidence = signal.get("evidence") or []
+        links = [e for e in evidence if e.get("url")]
+        if links:
+            lines = "\n".join(
+                f"{i}. [{e['title']}（{e.get('source','')}·{e.get('date','')}）]({e['url']})".replace("（·", "（").replace("·）", "）")
+                for i, e in enumerate(links, 1)
+            )
+            elements.append({"tag": "div",
+                             "text": {"tag": "lark_md", "content": f"**依据来源**\n{lines}"}})
+        else:
+            elements.append({
+                "tag": "div",
+                "text": {"tag": "lark_md",
+                         "content": "**依据来源**\n暂无可靠公开来源支撑该结论，按灰色地带处理"},
+            })
+    else:
+        elements.append({
+            "tag": "div",
+            "text": {"tag": "lark_md",
+                     "content": "**AI 研判**\n待 AI 研判官核查论点后给出结论与依据来源"},
+        })
+
+    src = holding.get("source") or "wind"
+    elements.append({"tag": "hr"})
+    elements.append({
+        "tag": "note",
+        "elements": [{"tag": "plain_text",
+                      "content": f"{generated_at} · 数据源 {src} · 研究参考，不构成投资建议"}],
+    })
+    return {
+        "config": {"wide_screen_mode": True},
+        "header": {"template": template,
+                   "title": {"tag": "plain_text",
+                             "content": f"{label}｜{signal.get('name','')} {signal.get('code','')}"}},
+        "elements": elements,
+    }
+
+
+def push_signals(latest: dict, cfg: dict | None = None) -> int:
+    """把 critical/high 等级信号逐条推送到飞书群。返回推送条数。"""
+    cfg = cfg or json.loads(CFG_PATH.read_text(encoding="utf-8"))
+    holdings = {h["code"]: h for h in latest.get("holdings", [])}
+    generated_at = latest.get("generatedAt", "")
+    count = 0
+    for s in latest.get("signals", []):
+        if s.get("level") not in _PUSH_LEVELS:
+            continue
+        card = signal_card(s, holdings.get(s.get("code")), generated_at)
+        send(cfg, "interactive", card)
+        count += 1
+    return count
+
+
 def main() -> None:
     cfg = json.loads(CFG_PATH.read_text(encoding="utf-8"))
     args = sys.argv[1:]

@@ -56,8 +56,17 @@ export default function Home() {
             <WatchlistManager onChanged={reload} />
             <footer className="border-t border-[#1a2540] pb-8 pt-4 text-center">
               <p className="font-data text-[10px] tracking-wider text-slate-600">
-                研究参考，不构成投资建议 · 当前为 MOCK 演示数据 · 港股哨兵 v0.1
+                研究参考，不构成投资建议 ·{" "}
+                {data.demo
+                  ? "当前为 MOCK 演示数据"
+                  : `真实数据 · ${(data.sources ?? []).join(" / ") || "Wind"}`}{" "}
+                · 港股哨兵 v0.2
               </p>
+              {!data.demo && (data.warnings ?? []).length > 0 && (
+                <p className="mt-1 font-data text-[10px] tracking-wider text-[#fbbf24]">
+                  {(data.warnings ?? []).join("；")}
+                </p>
+              )}
             </footer>
           </>
         )}

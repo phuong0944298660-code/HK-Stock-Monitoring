@@ -1,5 +1,6 @@
 import fs from "fs"
 import path from "path"
+import { execFile } from "child_process"
 import react from "@vitejs/plugin-react"
 import { defineConfig, type Plugin } from "vite"
 import { inspectAttr } from 'kimi-plugin-inspect-react'
@@ -9,6 +10,40 @@ import { inspectAttr } from 'kimi-plugin-inspect-react'
 const CONFIG_DIR = path.resolve(__dirname, "../backend/config")
 const WATCHLIST = path.join(CONFIG_DIR, "watchlist.json")
 const LATEST = path.resolve(__dirname, "public/data/latest.json")
+const WORKSPACE = path.resolve(__dirname, "..")
+
+// 手动刷新 = 真实跑一轮后端轮询（Wind 主源，约需 30-90 秒）
+const PY_CANDIDATES = [
+  process.env.PYTHON,
+  "python",
+  "python3",
+  "py",
+  "C:\\Users\\PC\\AppData\\Roaming\\kimi-desktop\\daimon-bundle\\runtime\\python\\cpython-3.12\\python.exe",
+].filter(Boolean) as string[]
+
+function runRealPoll(): Promise<{ stdout: string; python: string }> {
+  return new Promise((resolve, reject) => {
+    const tryNext = (i: number) => {
+      if (i >= PY_CANDIDATES.length)
+        return reject(new Error("未找到可用 Python 解释器"))
+      const py = PY_CANDIDATES[i]
+      execFile(
+        py,
+        ["-m", "backend.engine.run_poll"],
+        { cwd: WORKSPACE, timeout: 240_000 },
+        (err, stdout, stderr) => {
+          if (err) {
+            const notFound = (err as any).code === "ENOENT"
+            if (notFound) return tryNext(i + 1)
+            return reject(new Error(stderr || String(err)))
+          }
+          resolve({ stdout, python: py })
+        },
+      )
+    }
+    tryNext(0)
+  })
+}
 
 function normalizeCode(raw: string): string | null {
   const m = raw.trim().toUpperCase().replace(/\.HK$/, "")
@@ -41,14 +76,12 @@ function sentinelApi(): Plugin {
         }
 
         if (url === "/api/refresh" && req.method === "POST") {
-          try {
-            const d = JSON.parse(fs.readFileSync(LATEST, "utf-8"))
-            d.generatedAt = new Date().toISOString()
-            fs.writeFileSync(LATEST, JSON.stringify(d, null, 2))
-            send(res, { ok: true, generatedAt: d.generatedAt })
-          } catch (e) {
-            send(res, { error: String(e) }, 500)
-          }
+          runRealPoll()
+            .then(({ stdout, python }) => {
+              const d = JSON.parse(fs.readFileSync(LATEST, "utf-8"))
+              send(res, { ok: true, generatedAt: d.generatedAt, engine: python, log: stdout.trim() })
+            })
+            .catch((e) => send(res, { error: String(e) }, 500))
           return
         }
 
