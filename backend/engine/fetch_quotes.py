@@ -2,7 +2,8 @@
 """港股哨兵 · 行情抓取层
 
 主源：Wind（经 wind_client，agent-gw 网关）。
-兜底：Yahoo Finance 公共 chart API（无需凭证；仅在 Wind 失败时降级，并在数据中标注 source）。
+兜底①：腾讯行情公共接口（qt.gtimg.cn，港股快照，无需凭证）。
+兜底②：Yahoo Finance 公共 chart API（无需凭证，偶发 403 限流，排最后）。
 
 返回结构全部显式标注 source 与 asof（数据时点），禁止把兜底数据伪装成主源。
 """
@@ -127,7 +128,58 @@ def wind_news(query: str, top_k: int = 5) -> list[dict]:
     return out
 
 
-# ------------------------------------------------------------- Yahoo 兜底源
+# ------------------------------------------------------------ 腾讯兜底源①
+
+_TENCENT_UA = {"User-Agent": "Mozilla/5.0 (hk-sentinel fallback)"}
+
+
+def _tencent_symbol(windcode: str) -> str:
+    # 09988.HK -> hk09988（腾讯港股保留前导零、小写 hk 前缀）
+    code, _, suffix = windcode.partition(".")
+    if suffix.upper() == "HK":
+        return f"hk{code.zfill(5)}"
+    raise RuntimeError(f"腾讯兜底仅支持港股: {windcode}")
+
+
+def tencent_stock_snapshot(windcode: str) -> dict:
+    """腾讯 qt.gtimg.cn 港股快照（GBK 文本，~ 分隔）。
+
+    字段（实测 2026-07-23）：[1]名称 [3]现价 [4]昨收 [6]成交量(股)
+    [30]数据时点 [32]涨跌幅(%) [37]成交额(HKD)。
+    """
+    sym = _tencent_symbol(windcode)
+    url = f"https://qt.gtimg.cn/q={sym}"
+    req = urllib.request.Request(url, headers=_TENCENT_UA)
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        raw = resp.read().decode("gbk", "replace")
+    if "v_" not in raw or "=" not in raw:
+        raise RuntimeError(f"腾讯返回异常: {raw[:120]}")
+    body = raw.split("=", 1)[1].strip().strip('";').strip('"')
+    f = body.split("~")
+    if len(f) < 38:
+        raise RuntimeError(f"腾讯字段不足({len(f)}): {sym}")
+    price = _f(f[3])
+    if price is None or price <= 0:
+        raise RuntimeError(f"腾讯缺少有效价格: {sym} -> {f[3]!r}")
+    asof_raw = (f[30] or "").strip()
+    try:
+        asof_dt = datetime.strptime(asof_raw, "%Y/%m/%d %H:%M:%S").astimezone()
+        asof = asof_dt.isoformat(timespec="seconds")
+    except ValueError:
+        asof = datetime.now().astimezone().isoformat(timespec="seconds")
+    return {
+        "name": (f[1] or "").strip() or sym,
+        "price": price,
+        "prevClose": _f(f[4]),
+        "volume": _f(f[6]),
+        "amount": _f(f[37]),
+        "changePct": _f(f[32]),
+        "source": "tencent-fallback",
+        "asof": asof,
+    }
+
+
+# ------------------------------------------------------------- Yahoo 兜底源②
 
 _YAHOO_UA = {"User-Agent": "Mozilla/5.0 (hk-sentinel fallback)"}
 
@@ -170,19 +222,25 @@ def yahoo_stock_snapshot(windcode: str) -> dict:
 # ---------------------------------------------------------------- 统一入口
 
 def stock_snapshot(windcode: str) -> tuple[dict, list[str]]:
-    """主源 Wind，失败降级 Yahoo。返回 (snapshot, warnings)。"""
+    """主源 Wind，失败依次降级腾讯、Yahoo。返回 (snapshot, warnings)。"""
     warnings: list[str] = []
     try:
         return wind_stock_snapshot(windcode), warnings
     except Exception as exc:  # noqa: BLE001 —— 兜底必须兜住一切主源故障
         warnings.append(f"Wind 个股快照失败({windcode}): {exc}")
     try:
+        snap = tencent_stock_snapshot(windcode)
+        warnings.append(f"{windcode} 已降级腾讯兜底源")
+        return snap, warnings
+    except Exception as exc1:  # noqa: BLE001
+        warnings.append(f"腾讯兜底失败({windcode}): {exc1}")
+    try:
         snap = yahoo_stock_snapshot(windcode)
         warnings.append(f"{windcode} 已降级 Yahoo 兜底源（成交量/成交额可能缺失）")
         return snap, warnings
     except Exception as exc2:  # noqa: BLE001
         warnings.append(f"Yahoo 兜底也失败({windcode}): {exc2}")
-        raise wind_client.WindError(f"{windcode} 双源均失败") from exc2
+        raise wind_client.WindError(f"{windcode} 三源均失败") from exc2
 
 
 def index_snapshot(windcode: str) -> tuple[dict | None, list[str]]:

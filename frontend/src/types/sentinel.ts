@@ -42,7 +42,7 @@ export interface Holding {
   bands: Bands;
   bandsStatus?: string; // confirmed = 价格带已经建仓级分析确认
   signal: SignalLight;
-  source?: string; // 数据源：wind / yahoo-fallback
+  source?: string; // 数据源：wind / tencent-fallback / yahoo-fallback
   asof?: string; // 行情快照时点
 }
 

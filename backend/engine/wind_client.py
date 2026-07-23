@@ -19,8 +19,10 @@ import ast
 import csv
 import io
 import json
+import os
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 WIND_PLUGIN_ROOT = Path(
@@ -44,13 +46,26 @@ def _node_exe() -> str:
     raise WindError("未找到 node 可执行文件，无法调用 Wind CLI")
 
 
+def _cli_env() -> dict:
+    """Wind CLI 子进程环境。
+
+    CLI 内部会 spawn python3（agent-gw 链路）。托管 Python 运行时的
+    python3.exe 与解释器同目录（.venv/Scripts），但 Automation runner 的
+    PATH 不含该目录 → 显式把它前置到 PATH，保证任何运行环境下都能解析。
+    """
+    env = os.environ.copy()
+    exe_dir = os.path.dirname(sys.executable)
+    env["PATH"] = exe_dir + os.pathsep + env.get("PATH", "")
+    return env
+
+
 def call(server_type: str, tool: str, params: dict, timeout: int = DEFAULT_TIMEOUT) -> dict:
     """调用 Wind CLI，返回解析后的内层 payload（含 is_success / data_preview / notice）。"""
     if not CLI_PATH.is_file():
         raise WindError(f"Wind CLI 不存在: {CLI_PATH}")
     cmd = [_node_exe(), str(CLI_PATH), "call", server_type, tool, json.dumps(params, ensure_ascii=False)]
     try:
-        proc = subprocess.run(cmd, cwd=str(WIND_PLUGIN_ROOT), capture_output=True, timeout=timeout)
+        proc = subprocess.run(cmd, cwd=str(WIND_PLUGIN_ROOT), capture_output=True, timeout=timeout, env=_cli_env())
     except subprocess.TimeoutExpired as exc:
         raise WindError(f"Wind CLI 超时({timeout}s): {server_type}/{tool}") from exc
     stdout = proc.stdout.decode("utf-8", "replace").strip()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """港股哨兵 · 轮询主流程
 
-读取 backend/config/watchlist.json → 抓真实行情（Wind 主源，Yahoo 兜底）
+读取 backend/config/watchlist.json → 抓真实行情（Wind 主源，腾讯 → Yahoo 依次兜底）
 → 规则引擎评估 → 写 frontend/public/data/latest.json（前端唯一数据契约）
 → 可选 --push 把 critical/high 信号推飞书 + 桌面。
 
@@ -117,7 +117,7 @@ def build_latest(push: bool = False) -> dict:
         "holdings": holdings,
         "signals": signals,
         "warnings": warnings,
-        "sources": ["Wind（经 agent-gw 网关）", "Yahoo Finance（兜底，仅主源失败时）"],
+        "sources": ["Wind（经 agent-gw 网关）", "腾讯行情（兜底①）", "Yahoo Finance（兜底②，仅前两源失败时）"],
     }
     return latest
 
