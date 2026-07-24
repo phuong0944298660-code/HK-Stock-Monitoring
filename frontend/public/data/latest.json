@@ -1,16 +1,16 @@
 {
   "demo": false,
-  "generatedAt": "2026-07-24T09:42:10+08:00",
+  "generatedAt": "2026-07-24T10:12:11+08:00",
   "market": {
     "status": "open",
     "statusText": "港股交易中",
     "hsi": {
-      "value": 24905.05,
-      "changePct": -1.21
+      "value": 24934.12,
+      "changePct": -1.1
     },
     "hstech": {
-      "value": 4620.65,
-      "changePct": -1.66
+      "value": 4645.97,
+      "changePct": -1.12
     }
   },
   "holdings": [
@@ -22,7 +22,7 @@
       "price": 110.2,
       "prevClose": 114.9,
       "dayChangePct": -4.09,
-      "volume": 11606567.0,
+      "volume": 29851270.0,
       "volAvg20": 122619918.0,
       "cost": 113.1,
       "shares": 200,
@@ -36,7 +36,7 @@
       "bandsStatus": "confirmed",
       "signal": "hold",
       "source": "wind",
-      "asof": "2026-07-24T09:42:14+08:00"
+      "asof": "2026-07-24T10:12:15+08:00"
     }
   ],
   "signals": [],
