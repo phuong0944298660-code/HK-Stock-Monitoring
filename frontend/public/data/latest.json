@@ -1,16 +1,16 @@
 {
   "demo": false,
-  "generatedAt": "2026-07-24T10:42:12+08:00",
+  "generatedAt": "2026-07-24T11:12:13+08:00",
   "market": {
     "status": "open",
     "statusText": "港股交易中",
     "hsi": {
-      "value": 24907.5,
-      "changePct": -1.2
+      "value": 24863.36,
+      "changePct": -1.38
     },
     "hstech": {
-      "value": 4617.65,
-      "changePct": -1.72
+      "value": 4602.47,
+      "changePct": -2.04
     }
   },
   "holdings": [
@@ -19,15 +19,15 @@
       "windcode": "09988.HK",
       "name": "阿里巴巴-W",
       "currency": "HKD",
-      "price": 110.1,
+      "price": 109.1,
       "prevClose": 114.9,
-      "dayChangePct": -4.18,
-      "volume": 36357015.0,
+      "dayChangePct": -5.05,
+      "volume": 46495431.0,
       "volAvg20": 122619918.0,
       "cost": 113.1,
       "shares": 200,
-      "pnl": -600.0,
-      "pnlPct": -2.65,
+      "pnl": -800.0,
+      "pnlPct": -3.54,
       "bands": {
         "buyBelow": 105,
         "sellAbove": 165,
@@ -36,7 +36,7 @@
       "bandsStatus": "confirmed",
       "signal": "hold",
       "source": "wind",
-      "asof": "2026-07-24T10:42:16+08:00"
+      "asof": "2026-07-24T11:12:16+08:00"
     }
   ],
   "signals": [],
