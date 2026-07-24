@@ -59,10 +59,22 @@ def run(ctx: dict) -> dict:
         except Exception as exc:  # noqa: BLE001
             latest["warnings"].append(f"桌面通知失败: {exc}")
 
+    # 每日开盘状态卡：开盘后第一轮（09:42，窗口 09:30-09:59 HKT）无信号也推，
+    # 作为系统在线确认 + 当日开盘基线。cron 在该窗口仅 09:42 一轮，天然去重。
+    pushed_status = False
+    try:
+        now_hhmm = run_poll.datetime.now(run_poll.HK_TZ).strftime("%H:%M")
+        if "09:30" <= now_hhmm <= "09:59":
+            from backend.engine import feishu_push
+            pushed_status = feishu_push.push_status(latest, desktop=True)
+    except Exception as exc:  # noqa: BLE001
+        latest["warnings"].append(f"开盘状态卡推送失败: {exc}")
+
     n_sig = len(latest["signals"])
     summary = (
         f"{latest['market']['statusText']}；监控 {len(latest['holdings'])} 只；"
         f"信号 {n_sig} 条（飞书推 {pushed_feishu}，桌面推 {pushed_desktop}）；"
+        f"开盘状态卡{'已推' if pushed_status else '未推'}；"
         f"告警 {len(latest['warnings'])} 条"
     )
     return {"artifact": {
@@ -72,6 +84,7 @@ def run(ctx: dict) -> dict:
         "signalTitles": [f"{s['name']}·{s['title']}" for s in latest["signals"]],
         "pushedFeishu": pushed_feishu,
         "pushedDesktop": pushed_desktop,
+        "pushedStatusCard": pushed_status,
         "warningsCount": len(latest["warnings"]),
         "warnings": latest["warnings"][:5],
         "summary": summary,

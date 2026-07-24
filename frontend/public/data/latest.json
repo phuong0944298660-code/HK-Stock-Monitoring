@@ -1,6 +1,6 @@
 {
   "demo": false,
-  "generatedAt": "2026-07-24T00:33:43+08:00",
+  "generatedAt": "2026-07-24T08:15:26+08:00",
   "market": {
     "status": "pre",
     "statusText": "盘前",
@@ -36,7 +36,7 @@
       "bandsStatus": "confirmed",
       "signal": "hold",
       "source": "wind",
-      "asof": "2026-07-24T00:33:47+08:00"
+      "asof": "2026-07-24T08:15:30+08:00"
     }
   ],
   "signals": [],

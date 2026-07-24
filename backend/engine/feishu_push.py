@@ -170,6 +170,95 @@ def signal_card(signal: dict, holding: dict | None, generated_at: str) -> dict:
     }
 
 
+def status_card(latest: dict) -> dict:
+    """每日开盘状态卡：真实持仓 + 价格带距离 + 指数，无信号时也推（系统在线确认）。
+
+    数据全部来自 latest.json（行情哨兵当轮真实输出），无持仓时返回 None。
+    """
+    holdings = latest.get("holdings") or []
+    if not holdings:
+        return None
+    h = holdings[0]
+    m = latest.get("market") or {}
+    bands = h.get("bands") or {}
+
+    def field(title, value):
+        return {"is_short": True, "text": {"tag": "lark_md", "content": f"**{title}**\n{value}"}}
+
+    price = h.get("price")
+    chg = h.get("dayChangePct")
+    pnl, pnl_pct = h.get("pnl"), h.get("pnlPct")
+
+    def dist_line():
+        parts = []
+        bb, sa = bands.get("buyBelow"), bands.get("sellAbove")
+        if bb and price:
+            parts.append(f"补仓线 {bb:.2f}（现价{'高于' if price >= bb else '跌破'}其 {abs(price / bb - 1) * 100:.1f}%）")
+        if sa and price:
+            parts.append(f"卖出线 {sa:.2f}（距离 {(sa / price - 1) * 100:+.1f}%）")
+        return "｜".join(parts) if parts else "价格带未设置"
+
+    def idx_line(key, label):
+        node = m.get(key) or {}
+        if node.get("value") is None:
+            return f"{label}：数据暂缺"
+        return f"{label} {node['value']:,.2f}（{node.get('changePct') or 0:+.2f}%）"
+
+    fields = [
+        field("现价", f"{price:.2f} HKD" if isinstance(price, (int, float)) else "—"),
+        field("日涨跌", f"{chg:+.2f}%" if isinstance(chg, (int, float)) else "—"),
+        field("持仓", f"{h.get('shares')} 股 · 成本 {h.get('cost'):.2f}"),
+    ]
+    if pnl is not None:
+        fields.append(field("持仓浮盈", f"{pnl:+,.0f} HKD（{pnl_pct:+.1f}%）"))
+
+    n_sig = len(latest.get("signals") or [])
+    status_line = (
+        f"已有 {n_sig} 条信号待研判，AI 研判官将于最近一个 :47 核查后推更新卡片。"
+        if n_sig else
+        "当前无信号；触及补仓/卖出线或量价异动将即时推送（最迟 30 分钟内）。"
+    )
+    return {
+        "config": {"wide_screen_mode": True},
+        "header": {
+            "template": "blue",
+            "title": {"tag": "plain_text",
+                      "content": f"📊 港股哨兵 · 开盘状态｜{h.get('name','')} {h.get('code','')}"},
+        },
+        "elements": [
+            {"tag": "div", "fields": fields},
+            {"tag": "div", "text": {"tag": "lark_md", "content":
+                f"**价格带监控**\n{dist_line()}\n{idx_line('hsi', '恒指')}　{idx_line('hstech', '恒生科技')}"}},
+            {"tag": "div", "text": {"tag": "lark_md", "content": f"**当前状态**\n{status_line}"}},
+            {"tag": "hr"},
+            {"tag": "note", "elements": [{"tag": "plain_text", "content":
+                f"{latest.get('generatedAt','')} · 数据源 {h.get('source')}（asof {h.get('asof')}）· 研究参考，不构成投资建议"}]},
+        ],
+    }
+
+
+def push_status(latest: dict, cfg: dict | None = None, desktop: bool = True) -> bool:
+    """推开盘状态卡到飞书群，可选同步桌面通知。无持仓数据时跳过。返回是否推送。"""
+    card = status_card(latest)
+    if card is None:
+        return False
+    cfg = cfg or json.loads(CFG_PATH.read_text(encoding="utf-8"))
+    send(cfg, "interactive", card)
+    if desktop:
+        try:
+            from . import desktop_notify
+            h = (latest.get("holdings") or [{}])[0]
+            chg = h.get("dayChangePct")
+            pnl, pnl_pct = h.get("pnl"), h.get("pnlPct")
+            body = f"现价 {h.get('price'):.2f} HKD（{chg:+.2f}%）" if isinstance(chg, (int, float)) else "行情已更新"
+            if pnl is not None:
+                body += f"｜浮盈 {pnl:+,.0f} HKD（{pnl_pct:+.1f}%）"
+            desktop_notify.notify(f"港股哨兵 · 开盘状态｜{h.get('name','')} {h.get('code','')}", body)
+        except Exception:  # noqa: BLE001 —— 桌面通知失败不影响飞书主通道
+            pass
+    return True
+
+
 def push_signals(latest: dict, cfg: dict | None = None) -> int:
     """把 critical/high 等级信号逐条推送到飞书群。返回推送条数。"""
     cfg = cfg or json.loads(CFG_PATH.read_text(encoding="utf-8"))
