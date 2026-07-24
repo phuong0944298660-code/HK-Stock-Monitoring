@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "updatedAt": "2026-07-23T22:32:00+08:00",
+  "stocks": [
+    {
+      "code": "09988",
+      "windcode": "09988.HK",
+      "name": "阿里巴巴-W",
+      "cost": 113.1,
+      "shares": 200,
+      "bands": {
+        "buyBelow": 105,
+        "sellAbove": 165,
+        "stopLoss": null
+      },
+      "thesis": "中国电商基础设施+AI云双主业：云外部商业化收入+40%、AI相关收入连续11季度三位数增长，电商CMR同口径+8%基本盘稳固；FY27起非GAAP利润恢复、即时零售亏损逐年减半收敛；内在价值区间115-170 HKD（中枢135-150）。",
+      "redLines": [
+        "云外部商业化收入同比增速跌破20%，或AI相关收入三位数增长终结",
+        "客户管理收入（CMR）同口径同比增速转负且连续两个季度",
+        "FY27自由现金流未见转正路径，且即时零售亏损未按每年减半收敛",
+        "回购计划中止，或大规模折价股权融资/可转债摊薄",
+        "管理层诚信事件、审计意见异常，或对主业有实质影响的重大监管处罚"
+      ],
+      "bandsStatus": "confirmed",
+      "bandsConfirmedAt": "2026-07-23",
+      "dossier": "backend/reports/dossier-09988.md",
+      "officialSources": [
+        {
+          "title": "阿里巴巴集团投资者关系",
+          "url": "https://www.alibabagroup.com/ir-home",
+          "verifiedAt": "2026-07-23"
+        },
+        {
+          "title": "阿里巴巴集团2026财年业绩公告",
+          "url": "https://www.alibabagroup.com/document-1991237455038119936",
+          "verifiedAt": "2026-07-23"
+        },
+        {
+          "title": "港交所披露易·标题搜寻（09988公告）",
+          "url": "https://www1.hkexnews.hk/search/titlesearch.xhtml?lang=zh",
+          "verifiedAt": "2026-07-23"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* 暗色情报终端配色（shadcn 变量映射） */
+    --background: 224 52% 4%; /* #050810 */
+    --foreground: 213 31% 91%;
+    --card: 222 45% 9%; /* #0c1220 */
+    --card-foreground: 213 31% 91%;
+    --popover: 222 45% 9%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 187 92% 55%; /* cyan #22d3ee */
+    --primary-foreground: 224 52% 6%;
+    --secondary: 219 43% 12%; /* #111a2b */
+    --secondary-foreground: 213 31% 91%;
+    --muted: 219 43% 12%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 219 43% 15%;
+    --accent-foreground: 213 31% 91%;
+    --destructive: 0 84% 68%;
+    --destructive-foreground: 224 52% 6%;
+    --border: 223 42% 18%; /* #1a2540 */
+    --input: 223 42% 18%;
+    --ring: 187 92% 55%;
+    --radius: 0.5rem;
+    --sidebar-background: 222 45% 9%;
+    --sidebar-foreground: 213 31% 91%;
+    --sidebar-primary: 187 92% 55%;
+    --sidebar-primary-foreground: 224 52% 6%;
+    --sidebar-accent: 219 43% 15%;
+    --sidebar-accent-foreground: 213 31% 91%;
+    --sidebar-border: 223 42% 18%;
+    --sidebar-ring: 187 92% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei",
+      "Segoe UI", sans-serif;
+  }
+  /* 扫描线质感（任务控制台风格） */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 60;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.018) 0 1px,
+      transparent 1px 3px
+    );
+  }
+}
+
+@layer utilities {
+  /* 数据字体：等宽 + 表格数字，保证价格纵向对齐 */
+  .font-data {
+    font-family: "JetBrains Mono", "PingFang SC", "Microsoft YaHei", monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  /* 涨跌色：内地习惯 红涨绿跌 */
+  .text-up {
+    color: #f87171;
+  }
+  .text-down {
+    color: #34d399;
+  }
+  /* 信号灯语义色 */
+  .sig-buy {
+    color: #34d399;
+  }
+  .sig-sell {
+    color: #f87171;
+  }
+  .sig-hold {
+    color: #fbbf24;
+  }
+  .sig-live {
+    color: #22d3ee;
+  }
+}
+
+/* 细滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a2540;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 活性动效：只表达“在线/新鲜”，reduced-motion 兼容 */
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.8);
+  }
+}
+.live-dot {
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.ticker-track {
+  animation: ticker-scroll 42s linear infinite;
+}
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+.skeleton-pulse {
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot,
+  .ticker-track,
+  .skeleton-pulse {
+    animation: none;
+  }
+}

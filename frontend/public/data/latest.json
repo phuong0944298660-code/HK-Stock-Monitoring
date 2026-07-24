@@ -1,0 +1,50 @@
+{
+  "demo": false,
+  "generatedAt": "2026-07-24T08:15:26+08:00",
+  "market": {
+    "status": "pre",
+    "statusText": "盘前",
+    "hsi": {
+      "value": 25210.81,
+      "changePct": 1.28
+    },
+    "hstech": {
+      "value": 4698.48,
+      "changePct": 0.65
+    }
+  },
+  "holdings": [
+    {
+      "code": "09988",
+      "windcode": "09988.HK",
+      "name": "阿里巴巴-W",
+      "currency": "HKD",
+      "price": 114.9,
+      "prevClose": 113.6,
+      "dayChangePct": 1.14,
+      "volume": 52344763.0,
+      "volAvg20": 122619918.0,
+      "cost": 113.1,
+      "shares": 200,
+      "pnl": 360.0,
+      "pnlPct": 1.59,
+      "bands": {
+        "buyBelow": 105,
+        "sellAbove": 165,
+        "stopLoss": null
+      },
+      "bandsStatus": "confirmed",
+      "signal": "hold",
+      "source": "wind",
+      "asof": "2026-07-24T08:15:30+08:00"
+    }
+  ],
+  "signals": [],
+  "warnings": [],
+  "sources": [
+    "Wind（经 agent-gw 网关）",
+    "腾讯行情（个股/指数兜底①）",
+    "东方财富（日K兜底）",
+    "Yahoo Finance（兜底②，仅前两源失败时）"
+  ]
+}
