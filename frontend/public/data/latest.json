@@ -1,6 +1,6 @@
 {
   "demo": false,
-  "generatedAt": "2026-07-24T08:15:26+08:00",
+  "generatedAt": "2026-07-24T09:12:10+08:00",
   "market": {
     "status": "pre",
     "statusText": "盘前",
@@ -19,15 +19,15 @@
       "windcode": "09988.HK",
       "name": "阿里巴巴-W",
       "currency": "HKD",
-      "price": 114.9,
-      "prevClose": 113.6,
-      "dayChangePct": 1.14,
-      "volume": 52344763.0,
+      "price": 113.3,
+      "prevClose": 114.9,
+      "dayChangePct": -1.39,
+      "volume": 41200.0,
       "volAvg20": 122619918.0,
       "cost": 113.1,
       "shares": 200,
-      "pnl": 360.0,
-      "pnlPct": 1.59,
+      "pnl": 40.0,
+      "pnlPct": 0.18,
       "bands": {
         "buyBelow": 105,
         "sellAbove": 165,
@@ -36,11 +36,16 @@
       "bandsStatus": "confirmed",
       "signal": "hold",
       "source": "wind",
-      "asof": "2026-07-24T08:15:30+08:00"
+      "asof": "2026-07-24T09:12:14+08:00"
     }
   ],
   "signals": [],
-  "warnings": [],
+  "warnings": [
+    "Wind 指数快照失败(HSI.HI): 指数快照缺少数值: {'中文简称': '恒生指数', 'wind_code': 'HSI.HI'}",
+    "HSI.HI 指数已降级腾讯兜底源",
+    "Wind 指数快照失败(HSTECH.HI): 指数快照缺少数值: {'中文简称': '恒生科技', 'wind_code': 'HSTECH.HI'}",
+    "HSTECH.HI 指数已降级腾讯兜底源"
+  ],
   "sources": [
     "Wind（经 agent-gw 网关）",
     "腾讯行情（个股/指数兜底①）",
