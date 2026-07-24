@@ -70,11 +70,22 @@ def run(ctx: dict) -> dict:
     except Exception as exc:  # noqa: BLE001
         latest["warnings"].append(f"开盘状态卡推送失败: {exc}")
 
+    # 行情快照同步到 GitHub UAT → 触发 Pages 重新构建，网站数据保持新鲜。
+    # 失败不阻断本轮轮询，仅记告警。
+    git_sync_status = "未执行"
+    try:
+        from backend.engine import git_sync
+        git_sync_status = git_sync.sync_latest_to_remote(latest["generatedAt"])
+    except Exception as exc:  # noqa: BLE001
+        git_sync_status = f"同步失败: {exc}"
+        latest["warnings"].append(f"git 同步失败: {exc}")
+
     n_sig = len(latest["signals"])
     summary = (
         f"{latest['market']['statusText']}；监控 {len(latest['holdings'])} 只；"
         f"信号 {n_sig} 条（飞书推 {pushed_feishu}，桌面推 {pushed_desktop}）；"
         f"开盘状态卡{'已推' if pushed_status else '未推'}；"
+        f"git同步：{git_sync_status}；"
         f"告警 {len(latest['warnings'])} 条"
     )
     return {"artifact": {
@@ -85,6 +96,7 @@ def run(ctx: dict) -> dict:
         "pushedFeishu": pushed_feishu,
         "pushedDesktop": pushed_desktop,
         "pushedStatusCard": pushed_status,
+        "gitSync": git_sync_status,
         "warningsCount": len(latest["warnings"]),
         "warnings": latest["warnings"][:5],
         "summary": summary,
