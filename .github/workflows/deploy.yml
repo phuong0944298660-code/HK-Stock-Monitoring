@@ -14,6 +14,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 # 同一分支多次推送时取消旧构建，只保留最新
 concurrency:
