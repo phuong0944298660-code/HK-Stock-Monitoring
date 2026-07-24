@@ -4,3 +4,4 @@ __pycache__/
 backend/config/feishu.json
 
 backend/data/
+.vite/
